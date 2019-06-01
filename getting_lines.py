@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 
 import config
+from staff import Staff
 
 """
     Prepares the image for the next transformation. Applies threshold and canny edge detection.
@@ -33,8 +34,8 @@ def detect_lines(hough, image, nlines):
     lines_image_color = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
 
     for result_arr in hough[:nlines]:
-        rho = result_arr[0][0]
-        theta = result_arr[0][1]
+        rho = result_arr[0][0]      # 距(0,0)距離
+        theta = result_arr[0][1]    # 夾角
         a = np.cos(theta)
         b = np.sin(theta)
 
