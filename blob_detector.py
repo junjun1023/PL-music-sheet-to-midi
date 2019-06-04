@@ -7,11 +7,11 @@ def detect_blobs(input_image, staffs):
     if VERBOSE:
         print("Detecting blobs.")
     im_with_blobs = input_image.copy() #複製圖像
-
+    print(im_with_blobs)
     im_inv = (255 - im_with_blobs) # 最大图像灰度值减去原图像，即可得到反转的图像（黑白對調）
     # kernel通过将其与不同数量的相邻像素组合来告诉如何更改任何给定像素的值
-    kernel = cv2.getStructuringElement(ksize=(1, int(im_inv.shape[0] / 500)), shape=cv2.MORPH_RECT) 
-    horizontal_lines = cv2.morphologyEx(im_inv, cv2.MORPH_OPEN, kernel) #morphologyEx可以理解為消除物體之外的區域
+    kernel = cv2.getStructuringElement(ksize=(1, int(im_inv.shape[0] / 500)), shape=cv2.MORPH_RECT) # 得到 erode/dilate 模板 
+    horizontal_lines = cv2.morphologyEx(im_inv, cv2.MORPH_OPEN, kernel) # 開運算，使物體輪廓變光滑
     horizontal_lines = (255 - horizontal_lines)
 
     kernel = cv2.getStructuringElement(ksize=(int(im_inv.shape[1] / 350), 1), shape=cv2.MORPH_RECT)
@@ -36,6 +36,7 @@ def detect_blobs(input_image, staffs):
     params.minConvexity = 0.9
     params.filterByInertia = True
     params.minInertiaRatio = 0.01
+    params.blobColor = 0
 
     detector = cv2.SimpleBlobDetector_create(params)
     print(detector)

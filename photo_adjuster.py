@@ -16,7 +16,7 @@ def adjust_photo(image):
     gray = cv2.cvtColor(image.copy(), cv2.COLOR_RGB2GRAY)
     blur = cv2.GaussianBlur(gray, GAUSSIAN_BLUR_KERNEL, 0)   #去除雜訊
     edged = cv2.Canny(blur, 0, 50)
-    cv2.imwrite("output/canny.jpg", edged)
+    cv2.imwrite("output/1canny.jpg", edged)
 
     if SAVING_IMAGES_STEPS:
         cv2.imwrite("output/1canny.jpg", edged)
@@ -32,10 +32,12 @@ def adjust_photo(image):
             break
 
     if 'sheet' not in locals():
-        return image
+        print("Couldn't find a paper sheet in the picture!")
+        sys.exit()
+
 
     approx = np.asarray([x[0] for x in sheet.astype(dtype=np.float32)]) # 找頂點
-
+    print(approx)
     # top_left has the smallest sum, bottom_right has the biggest, 分類頂點
     top_left = min(approx, key=lambda t: t[0] + t[1])
     bottom_right = max(approx, key=lambda t: t[0] + t[1])
@@ -52,19 +54,17 @@ def adjust_photo(image):
         [0, max_height - 1]], dtype="float32")
 
     rectangle = np.asarray([top_left, top_right, bottom_right, bottom_left])
-
+    print(rectangle)
     # 變換投影出只有樂譜
     m = cv2.getPerspectiveTransform(rectangle, arr)
     dst = cv2.warpPerspective(image, m, (max_width, max_height))
 
     cv2.drawContours(image, contours, -1, (0, 255, 0), 2)
-    cv2.imwrite("output/with_contours.png", image)
+    cv2.imwrite("output/2with_contours.png", image)
     dst = cv2.cvtColor(dst, cv2.COLOR_BGR2GRAY)
 
     _, result = cv2.threshold(dst, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
 
-    cv2.imwrite("output/adjusted_photo.png", result)
-
     if SAVING_IMAGES_STEPS:
-        cv2.imwrite("output/adjusted_photo.png", result)
+         cv2.imwrite("output/3adjusted_photo.png", result)
     return result

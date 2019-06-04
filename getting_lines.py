@@ -107,6 +107,7 @@ def draw_staffs(image, staffs):
 """
 def get_staffs(image):
     processed_image, thresholded = preprocess_image(image)
+    print(processed_image)
     hough = cv2.HoughLines(processed_image, 1, np.pi / 150, 200)    # detecting line
     all_lines, lines_image_color = detect_lines(hough, thresholded, 80)
     staffs = detect_staffs(all_lines)

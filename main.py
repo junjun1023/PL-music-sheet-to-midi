@@ -13,7 +13,7 @@ from photo_adjuster import adjust_photo
 
 global file_path
 
-def select_file():
+def select_real():
     file_path = tkFiledialog.askopenfilename(initialdir='./', title='Select an Image', filetypes=(("jpeg", "*.jpeg"), ("jpg", "*.jpg"), ("png", "*.png")))
     if file_path:
         filename = os.path.basename(file_path)
@@ -24,10 +24,10 @@ def select_file():
         staffs = get_staffs(adjusted_photo)
         blobs = detect_blobs(adjusted_photo, staffs)
         notes = extract_notes(blobs, staffs, adjusted_photo)
-        print(notes)
+        draw_notes_pitch(adjusted_photo, notes)
 
 main_window = tk.Tk()
-main_window.geometry('300x150')
+main_window.geometry('300x200')
 main_window.title('Main Page')
 
 # define frame
@@ -39,7 +39,7 @@ label = tk.Label(middle_frame, text='Please choose a music sheet', font=("Helvet
 label.grid(row=0, sticky='w', padx=16, pady=16)
 
 # button
-button = tk.Button(middle_frame, text='Select File', font=("Helvetica", 18), command=select_file)
+button = tk.Button(middle_frame, text='Select File', font=("Helvetica", 18), command=select_real)
 button.grid(row=1, sticky='nsew', padx=16, pady=16)
 
 main_window.mainloop()
