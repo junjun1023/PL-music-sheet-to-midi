@@ -2,7 +2,8 @@ import sys
 import cv2
 import numpy as np
 
-from .util import distance
+from config import *
+from util import distance
 
 """
     Detects a sheet of paper in the image. Crops, rotates and performs thresholding on it.
@@ -10,11 +11,15 @@ from .util import distance
     :return: adjusted photo prepared for further analysis
 """
 def adjust_photo(image):
+    if VERBOSE:
+        print("Adjusting photo.")
     gray = cv2.cvtColor(image.copy(), cv2.COLOR_RGB2GRAY)
     blur = cv2.GaussianBlur(gray, GAUSSIAN_BLUR_KERNEL, 0)   #去除雜訊
     edged = cv2.Canny(blur, 0, 50)
     cv2.imwrite("output/canny.jpg", edged)
 
+    if SAVING_IMAGES_STEPS:
+        cv2.imwrite("output/1canny.jpg", edged)
     _, contours, _ = cv2.findContours(edged, cv2.RETR_LIST, cv2.CHAIN_APPROX_NONE)   # 取得contour, 傳回contour所有點
     contours = sorted(contours, key=cv2.contourArea, reverse=True)
 
@@ -60,4 +65,6 @@ def adjust_photo(image):
 
     cv2.imwrite("output/adjusted_photo.png", result)
 
+    if SAVING_IMAGES_STEPS:
+        cv2.imwrite("output/adjusted_photo.png", result)
     return result

@@ -6,6 +6,11 @@ import cv2 as cv
 import numpy as np
 import matplotlib.pyplot as plt
 
+from blob_detector import detect_blobs
+from getting_lines import get_staffs
+from note import *
+from photo_adjuster import adjust_photo
+
 global file_path
 
 def select_file():
@@ -15,7 +20,11 @@ def select_file():
         text = tkFont.Font(family="Helvetica", size=18)
         button.configure(text=filename, wraplength=text.measure(filename))
         image = cv.imread(file_path)
-        print(image)
+        adjusted_photo = adjust_photo(image)
+        staffs = get_staffs(adjusted_photo)
+        blobs = detect_blobs(adjusted_photo, staffs)
+        notes = extract_notes(blobs, staffs, adjusted_photo)
+        print(notes)
 
 main_window = tk.Tk()
 main_window.geometry('300x150')
